@@ -1,0 +1,5 @@
+{
+    "baseURI" : "/redfish/v1",
+    "Session" : "/Sessions",
+    "System" : "/Systems"
+}
