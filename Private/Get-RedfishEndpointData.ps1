@@ -12,14 +12,14 @@ function Get-RedfishEndpointData
         $Endpoint,
 
         [Parameter(Mandatory = $true)]
-        [pscredential]
-        $Credential
+        [Hashtable]
+        $Session
     )
 
     $Url = "https://${IPAddress}${EndPoint}"
     Write-Verbose -Message "Processing ${EndPoint} ..."
-    $response = Invoke-RestMethod -Method Get -UseBasicParsing -Uri $Url -Credential $Credential
-    
+    $response = Invoke-RestMethod -Method Get -UseBasicParsing -Uri $Url -Headers $Session -ContentType 'application/json'
+
     #Remove links if present. Without this we may go into an endless recursion
     if ($response.Links)
     {
@@ -36,20 +36,20 @@ function Get-RedfishEndpointData
         $memberResponse = @()
         foreach ($member in $response.Members)
         {
-            $memberResponse += Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $member.'@odata.id' -Credential $Credential -ErrorAction SilentlyContinue
+            $memberResponse += Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $member.'@odata.id' -Session $Session -ErrorAction SilentlyContinue
         }
-            
+
         $response = $memberResponse
         #$response.Members = $memberResponse
         #$response.PSObject.Properties.Remove('Members@odata.count')
     }
 
     foreach ($property in $response.PSObject.Properties.Name)
-    {        
+    {
         #This means we have a property with an oData ID. This could be a collection.
         if (($response.$property -is [PSCustomObject]) -and ($response.$property.PSObject.Properties.Count -eq 1) -and ($response.$Property.'@odata.id'))
         {
-            $response.$property = Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $response.$property.'@odata.id' -Credential $Credential -ErrorAction SilentlyContinue
+            $response.$property = Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $response.$property.'@odata.id' -Session $Session -ErrorAction SilentlyContinue
         }
     }
 

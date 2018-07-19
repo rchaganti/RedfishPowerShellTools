@@ -10,10 +10,13 @@ function Get-RedfishSystem
 
     if ($ConnectionObject.Systems)
     {
-        return $ConnectionObject.Systems
+        $systems = $ConnectionObject.Systems
+        $systems.PSObject.TypeNames.Insert(0,"Redfish.System")
+
+        return $systems
     }
     else
     {
-        throw 'ConnectionObject does not have a key by name Systems.'    
+        throw 'ConnectionObject does not have a key by name Systems.'
     }
 }

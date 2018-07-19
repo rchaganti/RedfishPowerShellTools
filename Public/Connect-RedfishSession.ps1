@@ -1,4 +1,4 @@
-﻿function Connect-RedfishSystem
+﻿function Connect-RedfishSession
 {
     [CmdletBinding()]
     param
@@ -12,6 +12,8 @@
         $Credential
     )
     
+    $Session = New-RedfishSession -IPAddress $IPAddress -Credential $Credential -Verbose
+    
     #Script block for PowerShell runspaces
     $scriptblock = {
         Param (
@@ -24,8 +26,8 @@
             $Endpoint,
 
             [Parameter(Mandatory = $true)]
-            [pscredential]
-            $Credential,
+            [Hashtable]
+            $Session,
 
             [Parameter(Mandatory = $true)]
             [string]
@@ -33,7 +35,7 @@
         )
 
         Import-Module -Name RedfishPowerShellTools
-        $response = Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $Endpoint -Credential $Credential -ErrorAction SilentlyContinue
+        $response = Get-RedfishEndpointData -IPAddress $IPAddress -Endpoint $Endpoint -Session $Session -ErrorAction SilentlyContinue
         return $resourceName, $response
     }
 
@@ -43,6 +45,7 @@
 
     #Synchronized object for data sharing and endpoint data
     $hash = [hashtable]::new()
+    $hash.Add('Token',$Session)
 
     #Runspace plumbing
     $pool = [RunspaceFactory]::CreateRunspacePool(1, [int]$env:NUMBER_OF_PROCESSORS + 1)
@@ -73,7 +76,7 @@
                 $null = $powershell.AddScript($scriptblock)
                 $null = $powershell.AddArgument($IPAddress)
                 $null = $powershell.AddArgument($srObject.$property.'@odata.id')
-                $null = $powershell.AddArgument($Credential)
+                $null = $powershell.AddArgument($Session)
                 $null = $powershell.AddArgument($Property)
                 $powershell.RunspacePool = $pool
                 $runspaces += [PSCustomObject]@{ Pipe = $powershell; Status = $powershell.BeginInvoke() }

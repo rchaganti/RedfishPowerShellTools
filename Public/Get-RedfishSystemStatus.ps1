@@ -17,5 +17,3 @@ function Get-RedfishSystemStatus
         throw 'ConnectionObject does not have a key by name status under Systems.'    
     }
 }
-
-Status
