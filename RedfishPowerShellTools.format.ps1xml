@@ -55,5 +55,37 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>RedfishSystemValidatedAttributeTableView</Name>
+      <ViewSelectedBy>
+        <TypeName>Redfish.System.ValidatedAttribute</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>PSParentPath</PropertyName>
+        <CustomControlName>RedfishPowerShellToolsFormatControl</CustomControlName>
+      </GroupBy>
+      <TableControl>
+        <AutoSize/>
+        <TableHeaders>
+          <TableColumnHeader><Label>ServiceTag</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Component</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Attribute</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Expected</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Current</Label></TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap/>
+            <TableColumnItems>
+              <TableColumnItem><PropertyName>ServiceTag</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>Component</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>Attribute</PropertyName></TableColumnItem> 
+              <TableColumnItem><PropertyName>Expected</PropertyName></TableColumnItem> 
+              <TableColumnItem><PropertyName>Current</PropertyName></TableColumnItem> 
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

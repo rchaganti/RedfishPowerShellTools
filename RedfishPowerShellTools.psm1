@@ -12,21 +12,21 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
 
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
-$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
-[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+$allProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+[System.Net.ServicePointManager]::SecurityProtocol = $allProtocols
 
 #Get public and private function definition files.
-$Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\ -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue )
-$Private = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
+$public  = @( Get-ChildItem -Path $PSScriptRoot\Public\ -Filter *.ps1 -Exclude *.Tests.ps1 -Recurse -ErrorAction SilentlyContinue )
+$private = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -Exclude *.Tests.ps1 -ErrorAction SilentlyContinue )
 
 #Dot source the files
-Foreach($import in @($Public + $Private))
+foreach($import in @($public + $private))
 {
-    Try
+    try
     {
         . $import.fullname
     }
-    Catch
+    catch
     {
         Write-Error -Message "Failed to import function $($import.fullname): $_"
     }
