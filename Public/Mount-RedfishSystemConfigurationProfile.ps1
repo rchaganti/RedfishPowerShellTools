@@ -13,7 +13,7 @@ function Mount-RedfishSystemConfigurationProfile
     #Create the drive if it does not exist
     if (-not (Get-PSDrive -Name SCP -ErrorAction SilentlyContinue))
     {
-        $null = New-PSDrive -Name SCP -PSProvider SHiPS -Root 'RedfishPowerShellTools#ServerRoot' -Verbose
+        $null = New-PSDrive -Name SCP -PSProvider SHiPS -Root 'RedfishPowerShellTools#ServerRoot' -Verbose -Scope Global
     }
 
     #if we have a reference JSON, we can mount that.
